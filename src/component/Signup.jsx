@@ -11,7 +11,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
+import { BASE_URL } from "../config";
 
 const defaultTheme = createTheme();
 
@@ -24,28 +25,37 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit">
-        Being Developer
-      </Link>{" "}
-      {new Date().getFullYear()}
+      <Link color="inherit">Being Developer</Link> {new Date().getFullYear()}
       {"."}
     </Typography>
   );
 }
-;
-
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = {
       email: data.get("email"),
+      firstName: data.get("firstName"),
+
+
+
+
+
+
+      
+      lastName: data.get("lastName"),
       password: data.get("password"),
     };
     console.log(userData);
-    axios.post("")
-  };
 
+    try {
+      const response = await axios.post(`${BASE_URL}user/signup`, userData);
+      console.log("User created successfully:", response.data.user);
+    } catch (error) {
+      console.error("Error creating user:", error.response.data.error);
+    }
+  };
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
