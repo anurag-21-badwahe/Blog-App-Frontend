@@ -1,25 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  // State to track user authentication
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Dummy user data
   const [user, setUser] = useState({
-    name: "John Doe", // Replace with actual user data
-    // Add more user data fields as needed
+    name: "User",
   });
 
-  // Function to handle login
   const handleLogin = () => {
-    // Simulate login process, can be replaced with actual authentication logic
-    // For demonstration purposes, just toggling the isLoggedIn state
     setIsLoggedIn(true);
   };
 
-  // Function to handle logout
   const handleLogout = () => {
-    // Simulate logout process
     setIsLoggedIn(false);
   };
 
@@ -35,14 +28,22 @@ const Navbar = () => {
               {isLoggedIn ? (
                 <div className="flex items-center">
                   <span className="text-white mr-2">Welcome, {user.name}!</span>
-                  <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <button
+                    onClick={handleLogout}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
                     Logout
                   </button>
                 </div>
               ) : (
-                <button onClick={handleLogin} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Login
-                </button>
+                <Link to="/signin">
+                  <button
+                    onClick={handleLogin}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Login
+                  </button>
+                </Link>
               )}
             </li>
           </ul>
