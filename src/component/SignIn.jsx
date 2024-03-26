@@ -17,7 +17,7 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit">
         Being Developer
       </Link>{' '}
       {new Date().getFullYear()}
@@ -31,13 +31,17 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+   const users = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+    console.log(users);
+    const respons = await axios.get('/user')
   };
 
   return (
