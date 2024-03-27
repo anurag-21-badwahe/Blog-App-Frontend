@@ -1,27 +1,32 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import * as React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../config";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit">
-        Being Developer
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit">Being Developer</Link> {new Date().getFullYear()}
+      {"."}
     </Typography>
   );
 }
@@ -31,17 +36,23 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-   const users = {
-      email: data.get('email'),
-      password: data.get('password'),
+    const userData = {
+      email: data.get("email"),
+      password: data.get("password"),
     };
-    console.log(users);
-    const respons = await axios.get('/user')
+
+    try {
+      const response = await axios.post(`${BASE_URL}user/signin`, userData);
+      console.log("User signed in successfully:", response.data.user);
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing in:", error.response.data.error);
+    }
   };
 
   return (
@@ -51,18 +62,23 @@ export default function SignIn() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -103,8 +119,8 @@ export default function SignIn() {
               </Grid>
               <Grid item>
                 <div className="text-blue-500">
-              <Link to= "/signup">Don't have an account?SignUp</Link>
-              </div>
+                  <Link to="/signup">Don't have an account?SignUp</Link>
+                </div>
               </Grid>
             </Grid>
           </Box>

@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../config";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,7 +13,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
-import { BASE_URL } from "../config";
 
 const defaultTheme = createTheme();
 
@@ -31,27 +31,22 @@ function Copyright(props) {
   );
 }
 export default function SignUp() {
+  const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = {
       email: data.get("email"),
       firstName: data.get("firstName"),
-
-
-
-
-
-
-      
       lastName: data.get("lastName"),
       password: data.get("password"),
     };
-    console.log(userData);
+    // console.log(userData);
 
     try {
       const response = await axios.post(`${BASE_URL}user/signup`, userData);
       console.log("User created successfully:", response.data.user);
+      navigate("/")
     } catch (error) {
       console.error("Error creating user:", error.response.data.error);
     }
