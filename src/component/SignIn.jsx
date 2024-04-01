@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,6 +16,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
 
 function Copyright(props) {
   return (
@@ -36,6 +38,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+  const [alert, setAlert] = useState({ type: "", message: "" });
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -45,18 +48,30 @@ export default function SignIn() {
       email: data.get("email"),
       password: data.get("password"),
     };
-
+  
     try {
-      const response = await axios.post(`${BASE_URL}user/signin`, userData);
-      console.log("User signed in successfully:", response.data.user);
+      const response = await axios.post(`${BASE_URL}api/users/auth`, userData,{
+        withCredentials:true
+      });
+      console.log("User logged in successfully:", response?.data);
       navigate("/");
     } catch (error) {
-      console.error("Error signing in:", error.response.data.error);
+      // console.error("Error logging in:", error.response.data.error);
+      setAlert({ type: "error", message:"Invalid Credential" });
+      setTimeout(() => {
+        setAlert({ type: "", message: "" });
+      }, 5000);
     }
   };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
+       {alert.type && (
+            <Alert severity={alert.type} sx={{ mt: 2 }}>
+              {alert.message}
+            </Alert>
+          )}
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

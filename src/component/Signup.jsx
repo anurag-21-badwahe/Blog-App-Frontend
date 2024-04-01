@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../config";
 import Avatar from "@mui/material/Avatar";
@@ -32,25 +33,32 @@ function Copyright(props) {
 }
 export default function SignUp() {
   const navigate = useNavigate();
+  const [alert, setAlert] = useState({ type: "", message: "" });
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     const userData = {
-      email: data.get("email"),
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
-      password: data.get("password"),
+      email: event.currentTarget.email.value,
+      firstName: event.currentTarget.firstName.value,
+      lastName: event.currentTarget.lastName.value,
+      password: event.currentTarget.password.value,
     };
-    // console.log(userData);
 
     try {
-      const response = await axios.post(`${BASE_URL}user/signup`, userData);
-      console.log("User created successfully:", response.data.user);
-      navigate("/")
+      const response = await axios.post(`${BASE_URL}api/users/`, userData, {
+        withCredentials: true,
+      });
+      localStorage.setItem("userData", JSON.stringify(response?.data.user));
+      console.log(response);
+      console.log("User created successfully:", response?.data.user.firstName);
+      setAlert({ type: "success", message: "User created successfully" });
+      navigate("/");
     } catch (error) {
-      console.error("Error creating user:", error.response.data.error);
+      console.error("Error creating user:", error.message);
+      setAlert({ type: "error", message: error.message });
     }
   };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -69,6 +77,11 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          {alert.type && (
+            <Alert severity={alert.type} sx={{ mt: 2 }}>
+              {alert.message}
+            </Alert>
+          )}
           <Box
             component="form"
             noValidate
@@ -121,7 +134,6 @@ export default function SignUp() {
               <Grid item xs={12}></Grid>
             </Grid>
             <Button
-              // onClick={handleSignup}
               type="submit"
               fullWidth
               variant="contained"

@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../config";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({ firstName: "", email: "" });
+  const [error, setError] = useState(null);
 
-  const [user, setUser] = useState({
-    name: "User",
-  });
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/users/profile');
+        setUserData(response.data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchProfileData();
+  }, []); 
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setUser({
+      firstName: "User", // Update to firstName instead of name
+      email: "", // Clear email when logging out
+    });
   };
 
   return (
@@ -27,7 +41,7 @@ const Navbar = () => {
             <li className="mx-2">
               {isLoggedIn ? (
                 <div className="flex items-center">
-                  <span className="text-white mr-2">Welcome, {user.name}!</span>
+                  <span className="text-white mr-2">Welcome, {user.firstName}!</span> {/* Update to firstName */}
                   <button
                     onClick={handleLogout}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -38,7 +52,6 @@ const Navbar = () => {
               ) : (
                 <Link to="/signin">
                   <button
-                    onClick={handleLogin}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   >
                     Login
